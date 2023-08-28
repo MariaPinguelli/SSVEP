@@ -1,3 +1,6 @@
+# Especificos do projeto
+papers/avi
+datasets/avi
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
