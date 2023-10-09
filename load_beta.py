@@ -1,6 +1,7 @@
 from scipy.io import loadmat                # Biblioteca para carregar arquivos .mat
 import numpy as np                     # Biblioteca do numpy para manipulação de matrizes
 import mne
+from sklearn.preprocessing import LabelEncoder
 
 file = loadmat("./datasets/beta/S8.mat")
 
@@ -41,6 +42,7 @@ print("SHAPE",data.shape)
 # -------------------------------------- INFO
 ch_names = []
 # print("LABELS", labels)
+event_labels = labels[4][0]
 labels = labels[3]
 ch_types = []
 
@@ -53,13 +55,29 @@ print("INFO",info)
 #epochs
 #criar dicionário das teclas e frequências
 event_dict = {
-    '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0,
-    '7': 0, '8': 0, '9': 0, '0': 0,
-    'a': 0, 'b': 0, 'c': 0, 'd': 0, 'e': 0, 'f': 0,
-    'g': 0, 'h': 0, 'i': 0, 'j': 0, 'k': 0, '1': 0,
-    'm': 0, 'n': 0, 'o': 0, 'p': 0, 'q': 0, 'r': 0,
-    's': 0, 't': 0, 'u': 0, 'v': 0, 'x': 0, 'w': 0,
-    'y': 0, 'z': 0, '<': 0, '_': 0, '.': 0, ',': 0
+    '1': 14, '2': 14.2, '3': 14.4, '4': 14.6, '5': 14.8, '6': 15,
+    '7': 15.2, '8': 15.4, '9': 15.6, '0': 13.8,
+    'a': 8.6, 'b': 8.8, 'c': 9, 'd': 9.2, 'e': 9.4, 'f': 9.6,
+    'g': 9.8, 'h': 10, 'i': 10.2, 'j': 10.4, 'k': 10.6, '1': 10.8,
+    'm': 11, 'n': 11.2, 'o': 11.4, 'p': 11.6, 'q': 11.8, 'r': 12,
+    's': 12.2, 't': 12.4, 'u': 12.6, 'v': 12.8, 'x': 13.2, 'w': 13,
+    'y': 13.4, 'z': 13.6, '<': 8.4, '_': 15.8, '.': 8, ',': 8.2
 }
+
+# print("-----------------------------------------------------------------------------------")
+# print(labels[1].shape)
+# print("-----------------------------------------------------------------------------------")
+# print(labels)
+
 #criar epoch
+le = LabelEncoder()
+events = np.column_stack((
+    np.array(range(len(labels))),
+    np.zeros(labels.shape[0], dtype=float),
+    le.fit_transform(event_labels))
+)
+
+mne_data = mne.EpochsArray(data, info, events, event_id=event_dict)
+print(mne_data)
+
 #compute_psd
